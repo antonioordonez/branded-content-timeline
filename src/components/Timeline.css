@@ -3,33 +3,16 @@
   padding: 4rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  overflow-x: clip;
 }
 
-/* Progress track */
+/* Progress track - hidden */
 .timeline-progress-track {
-  position: fixed;
-  left: 2rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 200px;
-  background: rgba(255, 255, 0, 0.1);
-  border-radius: 2px;
-  z-index: 100;
   display: none;
 }
 
-@media (min-width: 1400px) {
-  .timeline-progress-track {
-    display: block;
-  }
-}
-
 .timeline-progress-line {
-  width: 100%;
-  background: var(--mcs-accent);
-  border-radius: 2px;
-  box-shadow: 0 0 20px var(--mcs-accent);
+  display: none;
 }
 
 /* Header */
@@ -64,7 +47,6 @@
 /* Content */
 .timeline-content {
   position: relative;
-  overflow-x: hidden;
 }
 
 /* Era Section Headers */
