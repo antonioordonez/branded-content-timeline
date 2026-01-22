@@ -1,0 +1,310 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--era-background);
+  border-radius: 24px;
+  color: var(--era-text);
+  perspective: 1000px;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--era-accent),
+    0 0 100px -20px var(--era-accent);
+}
+
+.modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: var(--era-accent);
+  border-radius: 3px;
+}
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--era-primary);
+  border: 1px solid var(--era-accent);
+  border-radius: 50%;
+  color: var(--era-accent);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--era-accent);
+  color: var(--era-primary);
+}
+
+/* Header */
+.modal-header {
+  padding: 1.5rem 2rem 0;
+}
+
+.modal-year-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--era-primary);
+  border-radius: 100px;
+}
+
+.modal-year {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--era-accent);
+}
+
+.modal-era-name {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--era-text);
+  opacity: 0.7;
+}
+
+/* Media */
+.modal-media {
+  padding: 1.5rem 2rem;
+}
+
+.modal-video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--era-primary);
+}
+
+.modal-video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.modal-image-wrapper {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--era-primary);
+}
+
+.modal-image-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.modal-icon-wrapper {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: var(--era-primary);
+  border-radius: 50%;
+  border: 2px solid var(--era-accent);
+  box-shadow: 0 0 40px rgba(var(--era-accent), 0.2);
+}
+
+/* Content */
+.modal-content {
+  padding: 0 2rem 2rem;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  color: var(--era-text);
+}
+
+.modal-brand {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--era-accent);
+  margin-bottom: 1.5rem;
+}
+
+.modal-description {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--era-text);
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+}
+
+/* Extended content */
+.modal-extended {
+  padding: 1.5rem;
+  background: var(--era-primary);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid var(--era-accent);
+}
+
+.modal-extended-title {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--era-accent);
+  margin-bottom: 0.75rem;
+}
+
+.modal-extended-text {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--era-text);
+  opacity: 0.85;
+}
+
+/* Insight quote */
+.modal-insight {
+  position: relative;
+  padding: 1.5rem 1.5rem 1.5rem 3rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--era-text);
+  background: linear-gradient(135deg, var(--era-primary) 0%, transparent 100%);
+  border-radius: 12px;
+}
+
+.modal-insight-icon {
+  position: absolute;
+  top: 0.5rem;
+  left: 1rem;
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  color: var(--era-accent);
+  opacity: 0.5;
+  line-height: 1;
+}
+
+/* Tags */
+.modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.modal-tag {
+  padding: 0.375rem 0.875rem;
+  background: transparent;
+  border: 1px solid var(--era-accent);
+  border-radius: 100px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--era-accent);
+  opacity: 0.8;
+}
+
+/* Decoration */
+.modal-decoration {
+  height: 3px;
+  background: linear-gradient(90deg, var(--era-accent), var(--era-secondary), var(--era-accent));
+  transform-origin: left;
+}
+
+/* Era-specific styles */
+.modal.era-victorian {
+  background: linear-gradient(180deg, #F5E6D3 0%, #E8D5C4 100%);
+}
+
+.modal.era-artDeco {
+  background: linear-gradient(180deg, #1C1C1C 0%, #0D0D0D 100%);
+}
+
+.modal.era-eighties {
+  background: linear-gradient(180deg, #1a0a2e 0%, #2d1458 100%);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px #90FF00,
+    0 0 60px -10px #FF1493,
+    0 0 100px -20px #00CED1;
+}
+
+.modal.era-immersive {
+  background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+}
+
+.modal.era-future {
+  background: var(--mcs-dark);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--mcs-accent),
+    0 0 100px -20px var(--mcs-accent);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .modal-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal {
+    max-height: 95vh;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .modal-header,
+  .modal-media,
+  .modal-content {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .modal-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    padding: 1.25rem;
+  }
+}

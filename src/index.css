@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* MCS Brand Colors */
+  --mcs-accent: #FFFF00;
+  --mcs-dark: #1D1B1D;
+
+  /* Base */
+  --font-display: 'Space Grotesk', 'Montserrat', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
+  --font-serif: 'Libre Baskerville', Georgia, serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  background: var(--mcs-dark);
+  color: #fff;
+}
+
+::selection {
+  background: var(--mcs-accent);
+  color: var(--mcs-dark);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--mcs-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mcs-accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffff66;
+}
+
+/* Era Theme Classes */
+.era-victorian {
+  --era-primary: #2C1810;
+  --era-secondary: #8B4513;
+  --era-accent: #D4A574;
+  --era-background: #F5E6D3;
+  --era-text: #1a0f0a;
+}
+
+.era-artNouveau {
+  --era-primary: #4A6741;
+  --era-secondary: #8FBC8F;
+  --era-accent: #DAA520;
+  --era-background: #F0EAD6;
+  --era-text: #2d3a29;
+}
+
+.era-artDeco {
+  --era-primary: #1C1C1C;
+  --era-secondary: #C9A227;
+  --era-accent: #E8D5B7;
+  --era-background: #0D0D0D;
+  --era-text: #ffffff;
+}
+
+.era-midCentury {
+  --era-primary: #FF6B35;
+  --era-secondary: #004E89;
+  --era-accent: #F7C59F;
+  --era-background: #FFFEF9;
+  --era-text: #1a1a1a;
+}
+
+.era-eighties {
+  --era-primary: #FF1493;
+  --era-secondary: #00CED1;
+  --era-accent: #90FF00;
+  --era-background: #1a0a2e;
+  --era-text: #ffffff;
+}
+
+.era-digital {
+  --era-primary: #0066CC;
+  --era-secondary: #00AA00;
+  --era-accent: #FF9900;
+  --era-background: #F0F4F8;
+  --era-text: #1a1a1a;
+}
+
+.era-social {
+  --era-primary: #E1306C;
+  --era-secondary: #405DE6;
+  --era-accent: #FCAF45;
+  --era-background: #FAFAFA;
+  --era-text: #262626;
+}
+
+.era-immersive {
+  --era-primary: #7C3AED;
+  --era-secondary: #06B6D4;
+  --era-accent: #F59E0B;
+  --era-background: #0F172A;
+  --era-text: #F1F5F9;
+}
+
+.era-future {
+  --era-primary: #FFFF00;
+  --era-secondary: #00FFFF;
+  --era-accent: #FF00FF;
+  --era-background: #1D1B1D;
+  --era-text: #ffffff;
+}
+
+/* Utility classes */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
