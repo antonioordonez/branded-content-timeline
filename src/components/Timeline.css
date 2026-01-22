@@ -64,6 +64,7 @@
 /* Content */
 .timeline-content {
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Era Section Headers */
