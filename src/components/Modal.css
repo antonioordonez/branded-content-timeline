@@ -92,7 +92,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--era-text);
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 /* Media */
@@ -198,7 +198,6 @@
   font-size: 0.9375rem;
   line-height: 1.7;
   color: var(--era-text);
-  opacity: 0.85;
 }
 
 /* Insight quote */
@@ -241,9 +240,8 @@
   border-radius: 100px;
   font-family: var(--font-display);
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--era-accent);
-  opacity: 0.8;
 }
 
 /* Decoration */
@@ -258,8 +256,116 @@
   background: linear-gradient(180deg, #F5E6D3 0%, #E8D5C4 100%);
 }
 
+/* Victorian: dark primary needs light text in nested elements */
+.modal.era-victorian .modal-year-badge {
+  background: rgba(44, 24, 16, 0.8);
+}
+
+.modal.era-victorian .modal-era-name {
+  color: #F5E6D3;
+  opacity: 1;
+}
+
+.modal.era-victorian .modal-extended {
+  background: rgba(44, 24, 16, 0.9);
+}
+
+.modal.era-victorian .modal-extended-title,
+.modal.era-victorian .modal-extended-text {
+  color: #F5E6D3;
+}
+
+.modal.era-victorian .modal-insight {
+  background: linear-gradient(135deg, rgba(44, 24, 16, 0.7) 0%, transparent 100%);
+}
+
+/* Art Nouveau: dark primary needs light text in nested elements */
+.modal.era-artNouveau .modal-year-badge {
+  background: rgba(74, 103, 65, 0.85);
+}
+
+.modal.era-artNouveau .modal-era-name {
+  color: #F0EAD6;
+  opacity: 1;
+}
+
+.modal.era-artNouveau .modal-extended {
+  background: rgba(74, 103, 65, 0.9);
+}
+
+.modal.era-artNouveau .modal-extended-title,
+.modal.era-artNouveau .modal-extended-text {
+  color: #F0EAD6;
+}
+
+.modal.era-artNouveau .modal-insight {
+  background: linear-gradient(135deg, rgba(74, 103, 65, 0.5) 0%, transparent 100%);
+}
+
 .modal.era-artDeco {
   background: linear-gradient(180deg, #1C1C1C 0%, #0D0D0D 100%);
+}
+
+/* Art Deco: gold accents on dark, ensure year badge is readable */
+.modal.era-artDeco .modal-year-badge {
+  background: #C9A227;
+  border: 1px solid #E8D5B7;
+}
+
+.modal.era-artDeco .modal-year {
+  color: #0D0D0D;
+}
+
+.modal.era-artDeco .modal-era-name {
+  color: #0D0D0D;
+  opacity: 1;
+}
+
+.modal.era-artDeco .modal-extended {
+  background: rgba(201, 162, 39, 0.15);
+}
+
+/* Mid-Century: orange primary needs adjusted text */
+.modal.era-midCentury .modal-year-badge {
+  background: #FF6B35;
+}
+
+.modal.era-midCentury .modal-era-name {
+  color: #ffffff;
+  opacity: 1;
+}
+
+.modal.era-midCentury .modal-extended {
+  background: rgba(0, 78, 137, 0.1);
+  border-left-color: #FF6B35;
+}
+
+/* Digital: blue primary needs light text */
+.modal.era-digital .modal-year-badge {
+  background: #0066CC;
+}
+
+.modal.era-digital .modal-era-name {
+  color: #ffffff;
+  opacity: 1;
+}
+
+.modal.era-digital .modal-extended {
+  background: rgba(0, 102, 204, 0.1);
+}
+
+/* Social: pink primary needs light text */
+.modal.era-social .modal-year-badge {
+  background: #E1306C;
+}
+
+.modal.era-social .modal-era-name {
+  color: #ffffff;
+  opacity: 1;
+}
+
+.modal.era-social .modal-extended {
+  background: rgba(225, 48, 108, 0.08);
 }
 
 .modal.era-eighties {
@@ -275,12 +381,58 @@
   background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
 }
 
+/* Immersive: purple primary needs light text */
+.modal.era-immersive .modal-year-badge {
+  background: #7C3AED;
+}
+
+.modal.era-immersive .modal-era-name {
+  color: #F1F5F9;
+  opacity: 1;
+}
+
+.modal.era-immersive .modal-extended {
+  background: rgba(124, 58, 237, 0.2);
+}
+
 .modal.era-future {
   background: var(--mcs-dark);
   box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.5),
     0 0 0 1px var(--mcs-accent),
     0 0 100px -20px var(--mcs-accent);
+}
+
+/* Future: yellow primary needs dark text */
+.modal.era-future .modal-year-badge {
+  background: #FFFF00;
+}
+
+.modal.era-future .modal-year {
+  color: #1D1B1D;
+}
+
+.modal.era-future .modal-era-name {
+  color: #1D1B1D;
+  opacity: 1;
+}
+
+.modal.era-future .modal-extended {
+  background: rgba(255, 255, 0, 0.1);
+}
+
+/* Eighties: ensure proper contrast */
+.modal.era-eighties .modal-year-badge {
+  background: #FF1493;
+}
+
+.modal.era-eighties .modal-era-name {
+  color: #ffffff;
+  opacity: 1;
+}
+
+.modal.era-eighties .modal-extended {
+  background: rgba(144, 255, 0, 0.1);
 }
 
 /* Mobile */

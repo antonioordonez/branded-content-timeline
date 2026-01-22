@@ -30,14 +30,14 @@ export default function Hero() {
       </div>
 
       <div className="hero-content">
-        <motion.p
-          className="hero-badge"
+        <motion.div
+          className="hero-logo"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          Madrid Content School
-        </motion.p>
+          <img src="/mcs-logo.svg" alt="Madrid Content School" />
+        </motion.div>
 
         <motion.h1
           className="hero-title"

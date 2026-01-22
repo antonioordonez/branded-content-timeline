@@ -3,94 +3,95 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { eras } from '../data/timelineData';
 import './AudioManager.css';
 
-// Era-specific audio configurations for generated ambient sounds
+// Era-specific music from archive.org (public domain) and other royalty-free sources
 const eraAudioConfig = {
   victorian: {
-    label: 'Piano Clásico',
-    baseFreq: 220,
-    type: 'sine',
-    chords: [1, 1.25, 1.5], // Minor chord
-    tempo: 0.5
+    label: 'Moonlight Sonata',
+    artist: 'Beethoven',
+    // Public domain classical from archive.org
+    url: 'https://archive.org/download/100ClassicalMusicMasterpieces/1801%20Beethoven-%20%27Moonlight%27%20Sonata%2C%201st%20movement.mp3'
   },
   artNouveau: {
-    label: 'Vals Elegante',
-    baseFreq: 261.63,
-    type: 'sine',
-    chords: [1, 1.25, 1.5, 2],
-    tempo: 0.75
+    label: 'Ave Maria',
+    artist: 'Schubert',
+    url: 'https://archive.org/download/100ClassicalMusicMasterpieces/1825%20Schubert%20-%20Ave%20Maria.mp3'
   },
   artDeco: {
-    label: 'Jazz Swing',
-    baseFreq: 196,
-    type: 'triangle',
-    chords: [1, 1.26, 1.5, 1.88], // Dominant 7th
-    tempo: 1.2
+    label: 'Jazz de los años 20',
+    artist: 'Bennie Moten',
+    // Public domain 1920s jazz
+    url: 'https://archive.org/download/Free_20s_Jazz_Collection/Bennie_Moten_Kater_St._Rag.mp3'
   },
   midCentury: {
-    label: 'Retro Lounge',
-    baseFreq: 293.66,
-    type: 'sine',
-    chords: [1, 1.2, 1.5],
-    tempo: 0.8
+    label: 'Spring Song',
+    artist: 'Mendelssohn',
+    url: 'https://archive.org/download/100ClassicalMusicMasterpieces/1841%20Mendelssohn%20-Spring%20Song.mp3'
   },
   eighties: {
-    label: 'Synthwave',
+    label: 'Synthwave Ambient',
+    artist: 'Synth Era',
+    // Using generated audio for 80s since we need synthwave
+    useGenerated: true,
     baseFreq: 110,
     type: 'sawtooth',
-    chords: [1, 1.335, 1.5, 2],
-    tempo: 1.5
+    chords: [1, 1.335, 1.5, 2]
   },
   digital: {
-    label: 'Electronic',
+    label: 'Electronic Ambient',
+    artist: 'Digital Age',
+    useGenerated: true,
     baseFreq: 174.61,
     type: 'square',
-    chords: [1, 1.5, 2],
-    tempo: 1.0
+    chords: [1, 1.5, 2]
   },
   social: {
-    label: 'Modern Ambient',
-    baseFreq: 329.63,
-    type: 'sine',
-    chords: [1, 1.2, 1.5, 1.8],
-    tempo: 0.6
+    label: 'Träumerei',
+    artist: 'Schumann',
+    url: 'https://archive.org/download/100ClassicalMusicMasterpieces/1838%20Schumann%20-%20Traumerei.mp3'
   },
   immersive: {
-    label: 'Cinematic',
-    baseFreq: 146.83,
-    type: 'sine',
-    chords: [1, 1.189, 1.498, 1.782], // Sus4
-    tempo: 0.4
+    label: 'Adagio',
+    artist: 'Albinoni',
+    url: 'https://archive.org/download/100ClassicalMusicMasterpieces/1730%20Albinoni%20%2C%20Adagio.mp3'
   },
   future: {
-    label: 'Futuristic',
+    label: 'Futuristic Ambient',
+    artist: 'Future Sounds',
+    useGenerated: true,
     baseFreq: 87.31,
     type: 'sawtooth',
-    chords: [1, 1.5, 2, 3],
-    tempo: 0.7
+    chords: [1, 1.5, 2, 3]
   }
 };
 
 export default function AudioManager() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentEra, setCurrentEra] = useState(null);
+  const [currentEra, setCurrentEra] = useState('victorian');
   const [isVisible, setIsVisible] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const audioRef = useRef(null);
   const audioContextRef = useRef(null);
-  const oscillatorsRef = useRef([]);
-  const gainNodeRef = useRef(null);
-  const lfoRef = useRef(null);
-  const isPlayingRef = useRef(false);
+  const nodesRef = useRef({ oscillators: [], gains: [] });
+  const masterGainRef = useRef(null);
+  const currentEraRef = useRef(currentEra);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    currentEraRef.current = currentEra;
+  }, [currentEra]);
 
   // Detect current era based on scroll position
   useEffect(() => {
     const handleScroll = () => {
       const timeline = document.getElementById('timeline');
-      if (!timeline) return;
+      if (!timeline) {
+        setIsVisible(false);
+        return;
+      }
 
       const timelineRect = timeline.getBoundingClientRect();
-      const isInTimeline = timelineRect.top < window.innerHeight * 0.5 && timelineRect.bottom > window.innerHeight * 0.5;
+      const isInTimeline = timelineRect.top < window.innerHeight * 0.8 && timelineRect.bottom > 0;
 
       setIsVisible(isInTimeline);
 
@@ -106,31 +107,44 @@ export default function AudioManager() {
 
         if (distance < closestDistance && rect.top < window.innerHeight) {
           closestDistance = distance;
-          const eraClass = Array.from(header.classList).find(c => c.startsWith('era-'));
+          const classList = Array.from(header.classList);
+          const eraClass = classList.find(c => c.startsWith('era-') && c !== 'era-section-header');
           if (eraClass) {
             closestEra = eraClass.replace('era-', '');
           }
         }
       });
 
-      if (closestEra && closestEra !== currentEra) {
+      if (closestEra && eraAudioConfig[closestEra]) {
         setCurrentEra(closestEra);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    setTimeout(handleScroll, 100);
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [currentEra]);
+  }, []);
 
-  // Create ambient sound for an era
-  const createAmbientSound = useCallback((eraKey) => {
-    if (!eraKey || !eraAudioConfig[eraKey]) return;
+  // Cleanup generated audio
+  const cleanupGenerated = useCallback(() => {
+    nodesRef.current.oscillators.forEach(osc => {
+      try {
+        osc.stop();
+        osc.disconnect();
+      } catch (e) {}
+    });
+    nodesRef.current.gains.forEach(gain => {
+      try {
+        gain.disconnect();
+      } catch (e) {}
+    });
+    nodesRef.current = { oscillators: [], gains: [] };
+  }, []);
 
-    const config = eraAudioConfig[eraKey];
-
-    // Create or resume audio context
+  // Create generated synth sound (for 80s, digital, future)
+  const createGeneratedSound = useCallback((config) => {
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
@@ -141,182 +155,197 @@ export default function AudioManager() {
       ctx.resume();
     }
 
-    // Stop existing oscillators
-    oscillatorsRef.current.forEach(osc => {
-      try {
-        osc.stop();
-        osc.disconnect();
-      } catch (e) {}
-    });
-    oscillatorsRef.current = [];
+    cleanupGenerated();
 
-    // Create master gain
-    if (gainNodeRef.current) {
-      gainNodeRef.current.disconnect();
-    }
-    gainNodeRef.current = ctx.createGain();
-    gainNodeRef.current.gain.setValueAtTime(0, ctx.currentTime);
-    gainNodeRef.current.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 1);
+    masterGainRef.current = ctx.createGain();
+    masterGainRef.current.gain.setValueAtTime(0.35, ctx.currentTime);
+    masterGainRef.current.connect(ctx.destination);
 
-    // Create filter for warmth
     const filter = ctx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(800, ctx.currentTime);
+    filter.frequency.setValueAtTime(1000, ctx.currentTime);
+    filter.connect(masterGainRef.current);
 
-    // Create reverb-like delay
-    const delay = ctx.createDelay();
-    delay.delayTime.setValueAtTime(0.3, ctx.currentTime);
-    const delayGain = ctx.createGain();
-    delayGain.gain.setValueAtTime(0.3, ctx.currentTime);
-
-    // Connect chain
-    gainNodeRef.current.connect(filter);
-    filter.connect(ctx.destination);
-    filter.connect(delay);
-    delay.connect(delayGain);
-    delayGain.connect(ctx.destination);
-
-    // Create oscillators for chord
     config.chords.forEach((ratio, i) => {
       const osc = ctx.createOscillator();
       osc.type = config.type;
       osc.frequency.setValueAtTime(config.baseFreq * ratio, ctx.currentTime);
+      osc.detune.setValueAtTime((i - 1) * 8, ctx.currentTime);
 
-      // Add slight detuning for richness
-      osc.detune.setValueAtTime((i - 1) * 5, ctx.currentTime);
-
-      // Individual gain for each oscillator
       const oscGain = ctx.createGain();
-      oscGain.gain.setValueAtTime(0.3 / config.chords.length, ctx.currentTime);
+      oscGain.gain.setValueAtTime(0.2, ctx.currentTime);
 
-      // Add slow LFO for movement
+      osc.connect(oscGain);
+      oscGain.connect(filter);
+      osc.start();
+
+      nodesRef.current.oscillators.push(osc);
+      nodesRef.current.gains.push(oscGain);
+
+      // LFO for movement
       const lfo = ctx.createOscillator();
       lfo.type = 'sine';
-      lfo.frequency.setValueAtTime(0.1 + (i * 0.05), ctx.currentTime);
+      lfo.frequency.setValueAtTime(0.15 + (i * 0.08), ctx.currentTime);
 
       const lfoGain = ctx.createGain();
-      lfoGain.gain.setValueAtTime(3, ctx.currentTime);
+      lfoGain.gain.setValueAtTime(5, ctx.currentTime);
 
       lfo.connect(lfoGain);
       lfoGain.connect(osc.frequency);
-
-      osc.connect(oscGain);
-      oscGain.connect(gainNodeRef.current);
-
-      osc.start();
       lfo.start();
 
-      oscillatorsRef.current.push(osc);
-      oscillatorsRef.current.push(lfo);
+      nodesRef.current.oscillators.push(lfo);
+      nodesRef.current.gains.push(lfoGain);
     });
 
-    // Add subtle rhythmic element
-    const rhythmOsc = ctx.createOscillator();
-    rhythmOsc.type = 'sine';
-    rhythmOsc.frequency.setValueAtTime(config.baseFreq / 2, ctx.currentTime);
+    // Bass
+    const bassOsc = ctx.createOscillator();
+    bassOsc.type = 'sine';
+    bassOsc.frequency.setValueAtTime(config.baseFreq / 2, ctx.currentTime);
 
-    const rhythmGain = ctx.createGain();
-    rhythmGain.gain.setValueAtTime(0, ctx.currentTime);
+    const bassGain = ctx.createGain();
+    bassGain.gain.setValueAtTime(0.12, ctx.currentTime);
 
-    // Rhythmic LFO
-    const rhythmLfo = ctx.createOscillator();
-    rhythmLfo.type = 'sine';
-    rhythmLfo.frequency.setValueAtTime(config.tempo, ctx.currentTime);
+    bassOsc.connect(bassGain);
+    bassGain.connect(masterGainRef.current);
+    bassOsc.start();
 
-    const rhythmLfoGain = ctx.createGain();
-    rhythmLfoGain.gain.setValueAtTime(0.05, ctx.currentTime);
+    nodesRef.current.oscillators.push(bassOsc);
+    nodesRef.current.gains.push(bassGain);
+  }, [cleanupGenerated]);
 
-    rhythmLfo.connect(rhythmLfoGain);
-    rhythmLfoGain.connect(rhythmGain.gain);
+  // Stop generated audio
+  const stopGenerated = useCallback(() => {
+    if (masterGainRef.current && audioContextRef.current) {
+      const ctx = audioContextRef.current;
+      masterGainRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
+      setTimeout(cleanupGenerated, 400);
+    }
+  }, [cleanupGenerated]);
 
-    rhythmOsc.connect(rhythmGain);
-    rhythmGain.connect(gainNodeRef.current);
+  // Play audio for era
+  const playAudio = useCallback((eraKey) => {
+    const config = eraAudioConfig[eraKey];
+    if (!config) return;
 
-    rhythmOsc.start();
-    rhythmLfo.start();
+    // Stop any existing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    stopGenerated();
 
-    oscillatorsRef.current.push(rhythmOsc);
-    oscillatorsRef.current.push(rhythmLfo);
+    if (config.useGenerated) {
+      // Use Web Audio API for synth sounds
+      createGeneratedSound(config);
+    } else {
+      // Use HTML5 Audio for real music
+      setIsLoading(true);
 
-  }, []);
+      if (!audioRef.current) {
+        audioRef.current = new Audio();
+        audioRef.current.loop = true;
+        audioRef.current.volume = 0.5;
+
+        audioRef.current.addEventListener('canplaythrough', () => {
+          setIsLoading(false);
+          if (currentEraRef.current === eraKey) {
+            audioRef.current.play().catch(e => console.log('Play failed:', e));
+          }
+        });
+
+        audioRef.current.addEventListener('error', (e) => {
+          console.error('Audio load error:', e);
+          setIsLoading(false);
+          // Fallback to generated audio
+          createGeneratedSound({
+            baseFreq: 220,
+            type: 'sine',
+            chords: [1, 1.25, 1.5]
+          });
+        });
+      }
+
+      audioRef.current.src = config.url;
+      audioRef.current.load();
+    }
+  }, [createGeneratedSound, stopGenerated]);
 
   // Stop all audio
-  const stopAudio = useCallback(() => {
-    if (gainNodeRef.current && audioContextRef.current) {
-      const ctx = audioContextRef.current;
-      gainNodeRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
-
-      setTimeout(() => {
-        oscillatorsRef.current.forEach(osc => {
-          try {
-            osc.stop();
-            osc.disconnect();
-          } catch (e) {}
-        });
-        oscillatorsRef.current = [];
-      }, 600);
+  const stopAllAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
-  }, []);
+    stopGenerated();
+  }, [stopGenerated]);
 
-  // Handle era changes
+  // Handle era changes while playing
   useEffect(() => {
-    if (currentEra && isPlayingRef.current) {
-      createAmbientSound(currentEra);
+    if (isPlaying && currentEra) {
+      playAudio(currentEra);
     }
-  }, [currentEra, createAmbientSound]);
+  }, [currentEra, isPlaying, playAudio]);
 
   // Toggle play/pause
   const togglePlay = () => {
-    setHasInteracted(true);
-
     if (isPlaying) {
-      stopAudio();
-      isPlayingRef.current = false;
+      stopAllAudio();
       setIsPlaying(false);
     } else {
-      isPlayingRef.current = true;
       setIsPlaying(true);
-      if (currentEra) {
-        createAmbientSound(currentEra);
-      }
+      playAudio(currentEra);
     }
   };
 
-  // Cleanup
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      stopAudio();
+      stopAllAudio();
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
     };
-  }, [stopAudio]);
+  }, [stopAllAudio]);
 
   const era = currentEra ? eras[currentEra] : null;
-  const audioInfo = currentEra ? eraAudioConfig[currentEra] : null;
+
+  const shouldShow = isVisible;
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      {shouldShow && (
         <motion.div
           className="audio-manager"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
         >
           <motion.button
-            className={`audio-button ${isPlaying ? 'playing' : ''}`}
+            className={`audio-button ${isPlaying ? 'playing' : ''} ${isLoading ? 'loading' : ''}`}
             onClick={togglePlay}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             style={{
-              '--audio-accent': era?.colors.accent || '#FFFF00',
+              '--audio-accent': era?.colors?.accent || '#FFFF00',
             }}
+            aria-label={isPlaying ? 'Pausar música' : 'Reproducir música'}
+            disabled={isLoading}
           >
             <AnimatePresence mode="wait">
-              {isPlaying ? (
+              {isLoading ? (
+                <motion.div
+                  key="loading"
+                  className="audio-loading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1, rotate: 360 }}
+                  transition={{ rotate: { duration: 1, repeat: Infinity, ease: "linear" } }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeDasharray="40 20" />
+                  </svg>
+                </motion.div>
+              ) : isPlaying ? (
                 <motion.svg
                   key="pause"
                   width="24"
@@ -348,7 +377,7 @@ export default function AudioManager() {
               )}
             </AnimatePresence>
 
-            {isPlaying && (
+            {isPlaying && !isLoading && (
               <div className="audio-visualizer">
                 {[...Array(4)].map((_, i) => (
                   <motion.span
@@ -368,28 +397,6 @@ export default function AudioManager() {
               </div>
             )}
           </motion.button>
-
-          <AnimatePresence>
-            {(showTooltip || !hasInteracted) && (
-              <motion.div
-                className="audio-tooltip"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-              >
-                {!hasInteracted ? (
-                  <span className="audio-hint">🎵 Música de época</span>
-                ) : isPlaying && audioInfo ? (
-                  <>
-                    <span className="audio-era">{era?.name}</span>
-                    <span className="audio-track">{audioInfo.label}</span>
-                  </>
-                ) : (
-                  <span className="audio-hint">Audio pausado</span>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </motion.div>
       )}
     </AnimatePresence>
